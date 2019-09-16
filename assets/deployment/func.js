@@ -5,11 +5,9 @@ function createSystem() {
     var hubpolicy = hubPro.restartPolicy;
     $("#hubImg").val(hubPro.settings.image);
     $("#hubCo").val(JSON.stringify(hubPro.settings.createOptions));
-    // $('#hubmt').val(JSON.stringify(message.$edgeHub["properties.desired"]));
     $("#hubStatus").find("option:contains(\"" + hubstatus + "\")").prop("selected", true);
     $("#hubPolicy").find("option:contains(\"" + hubpolicy + "\")").prop("selected", true);
     $("#agentImg").val(agentPro.settings.image);
-    // $('#agentco').val(agentPro.createOptions);
 }
 
 function createUpstream(i, connection, connectionnew) {
@@ -23,46 +21,6 @@ function createUpstream(i, connection, connectionnew) {
     var divsWithWindowClass = jsPlumb.getSelector(".module");
     jsPlumb.draggable(divsWithWindowClass);
 }
-
-// function createModules(key, config, i, connection, mdltwin, connectionnew) {
-//     var $canvas = $("#canvas");
-//     var $newdiv = $("<div class='module' id=\"" + key + "\"></div>");
-//     $newdiv.text(key);
-//     $newdiv.css({ position: "absolute", 'top': 70 + i * 70, 'left': 70 + i * 30 });
-//     $canvas.append($newdiv);
-//     $newdiv.dblclick(function() {
-//         var key = $(this).attr("id");
-//         console.log("dbl" + key);
-//         if (modifyflag) {
-//             $("#mdyUnsave").data("data-triggermdl", $(this).attr("id"));
-//             $("#mdyUnsave").modal();
-//         } else {
-//             var mdldpl = $("#module-property")[0].style.display;
-//             var sysdpl = $("#hub-property")[0].style.display;
-//             if (sysdpl !== "none") {
-//                 $("#module-property")[0].style.display = sysdpl;
-//                 $("#hub-property")[0].style.display = "none";
-//             } else if ($("#mdlName").val() === key) {
-//                 $("#hub-property")[0].style.display = mdldpl;
-//                 $("#module-property")[0].style.display = "none";
-//             }
-//             $("#mdlName").text(key);
-//             $("#mdlName").val(key);
-//             console.log("false" + $("#mdlName").val());
-//             $("#mdlImg").val(config.settings.image);
-//             $("#mdlCo").val(JSON.stringify(config.settings.createOptions));
-//             $("#mdlMt").val(JSON.stringify(mdltwin));
-//             var mdlstatus = config.status;
-//             $("#mdlStatus").find("option:contains(\"" + mdlstatus + "\")").attr("selected", true);
-//             var mdlpolicy = config.restartPolicy;
-//             $("#mdlPolicy").find("option:contains(\"" + mdlpolicy + "\")").attr("selected", true);
-//         }
-//     });
-//     jsPlumb.addEndpoint(key, { uuid: key + "ports" }, connection);
-//     jsPlumb.addEndpoint(key, { uuid: key + "portt" }, connectionnew);
-//     var divsWithWindowClass = jsPlumb.getSelector(".module");
-//     jsPlumb.draggable(divsWithWindowClass);
-// }
 
 function createModules(key, i, connection, connectionnew) {
     var $canvas = $("#canvas");
@@ -147,17 +105,13 @@ function display(connection, connectionnew) {
     createSystem();
     var i = 1;
     for (var key in moduleNode) {
-        // var mdltwin = {};
-        // if (message.hasOwnProperty(key)) {
-        //     mdltwin = message[key]["properties.desired"];
-        // }
-        // createModules(key, moduleNode[key], i, connection, mdltwin, connectionnew);
         createModules(key, i, connection, connectionnew);
         i++;
     }
     createUpstream(i, connection, connectionnew);
     setRoute(route, connection);
 }
+
 $("#deletecon").click(function() {
     routings.delete(deleteconn.id);
     jsPlumb.detach(deleteconn);
@@ -172,6 +126,7 @@ $("#popsave").click(function() {
         modifyflag = false;
     }
 })
+
 $("#popclose").click(function() {
     if (modifyflag) {
         modifyflag = false;
@@ -204,17 +159,17 @@ $("#pagesave").click(function() {
     message.$edgeHub["properties.desired"].routes = route;
     vscode.postMessage({ text: message })
 })
+
 $("#syssave").click(function() {
     message.$edgeAgent["properties.desired"].systemModules.edgeHub.settings.image = $('#hubImg').val();
-    // message.$edgeHub["properties.desired"]=$('#hubmt').val();
     message.$edgeAgent["properties.desired"].systemModules.edgeHub.status = $("#hubStatus").val();
     message.$edgeAgent["properties.desired"].systemModules.edgeHub.restartPolicy = $("#hubPolicy").val();
     message.$edgeAgent["properties.desired"].systemModules.edgeHub.settings.createOptions = JSON.parse($('#hubCo').val());
     message.$edgeAgent["properties.desired"].systemModules.edgeAgent.settings.image = $('#agentImg').val();
-    // message.$edgeAgent["properties.desired"].systemModules.edgeAgent.createOptions=$('#agentco').val();
     modifyflag = false;
 
 })
+
 $("#mdlsave").click(function() {
     var key = $("#mdlName").text();
     moduleNode[key].restartPolicy = $("#mdlPolicy").val();
@@ -229,51 +184,42 @@ $("#mdlsave").click(function() {
         message[key] = mdltwin;
     }
     modifyflag = false;
-
-    // if ($("#mdlName").val() != $("#mdlName").text()) {
-    //     $("#" + key).val() = $("#mdlName").val();
-    //     $("#" + key).attr('id', $("#mdlName").val());
-    //     moduleNode[$("#mdlName").val()] = moduleNode[$("#mdlName").text()];
-    //     delete moduleNode[$("#mdlName").text()];
-    //     if (message.hasOwnProperty(moduleNode[$("#mdlName").text()])) {
-    //         message[$("#mdlName").val()] = message[$("#mdlName").text()];
-    //         delete message[$("#mdlName").text()];
-    //     }
-    //     $("#mdlName").text($("#mdlName").val());
-    // }
 })
+
 $("#mdysave").click(function() {
     var mdldpl = $("#module-property")[0].style.display;
     var sysdpl = $("#hub-property")[0].style.display;
-    if (sysdpl != "none") { ///sys->mdl
+    if (sysdpl != "none") {
         $("#syssave").click();
         $("#" + $("#mdyUnsave").data("data-triggermdl")).dblclick();
-    } else if ($("#mdyUnsave").data("data-triggermdl") === $("#mdlName").text()) { ///mdl->sys
+    } else if ($("#mdyUnsave").data("data-triggermdl") === $("#mdlName").text()) {
         $("#mdlsave").click();
         $("#hub-property")[0].style.display = mdldpl;
         $("#module-property")[0].style.display = "none";
-    } else { ///mdl->mdl
+    } else {
         $("#mdlsave").click();
         $("#" + $("#mdyUnsave").data("data-triggermdl")).dblclick();
     }
 })
+
 $("#mdydel").click(function() {
     modifyflag = false;
     var mdldpl = $("#module-property")[0].style.display;
     var sysdpl = $("#hub-property")[0].style.display;
-    if (sysdpl != "none") { ///sys->mdl
+    if (sysdpl != "none") {
         createSystem();
         $("#" + $("#mdyUnsave").data("data-triggermdl")).dblclick();
-    } else if ($("#mdyUnsave").data("data-triggermdl") === $("#mdlName").text()) { ///mdl->sys
+    } else if ($("#mdyUnsave").data("data-triggermdl") === $("#mdlName").text()) {
         $("#" + $("#mdyUnsave").data("data-triggermdl")).dblclick();
         createSystem();
         $("#hub-property")[0].style.display = mdldpl;
         $("#module-property")[0].style.display = "none";
-    } else { ///mdl->mdl
+    } else {
         $("#" + $("#mdlName").val()).dblclick();
         $("#" + $("#mdyUnsave").data("data-triggermdl")).dblclick();
     }
 })
+
 $(".custom-select").change(function() {
     modifyflag = true;
 })
@@ -281,6 +227,7 @@ $(".custom-select").change(function() {
 $(".form-control").on("input", function() {
     modifyflag = true;
 })
+
 jsPlumb.ready(function() {
     var exampleDropOptions = {
         hoverClass: "dropHover",

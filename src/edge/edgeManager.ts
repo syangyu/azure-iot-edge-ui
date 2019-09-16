@@ -89,7 +89,7 @@ export class EdgeManager {
             return;
         }
         const templateJson = Utility.updateSchema(await fse.readJson(templateFile));
-        const tpl = templateJson.modulesContent;
+        const templateContent = templateJson.modulesContent;
         const panel = vscode.window.createWebviewPanel(
             "Depolyment Configuration",
             "Depolyment Configuration",
@@ -100,12 +100,12 @@ export class EdgeManager {
                 retainContextWhenHidden: true,
             },
         );
-        let html = await fse.readFile(this.context.asAbsolutePath(path.join("assets", "deployment", "sample.html")), "utf8");
+        let html = await fse.readFile(this.context.asAbsolutePath(path.join("assets", "deployment", "ui.html")), "utf8");
         html = html.replace(/{{root}}/g, vscode.Uri.file(this.context.asAbsolutePath(".")).with({ scheme: "vscode-resource" }).toString());
         panel.webview.html = html;
         panel.webview.onDidReceiveMessage((message) => {
             if (message.text === "start") {
-                panel.webview.postMessage(tpl);
+                panel.webview.postMessage(templateContent);
             } else {
                 templateJson.modulesContent = message.text;
                 fse.writeFile(templateFile, JSON.stringify(templateJson, null, 2), { encoding: "utf8" });

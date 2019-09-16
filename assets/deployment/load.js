@@ -5,11 +5,10 @@ try {
 
 }
 
-var message, moduleNode, route, routeJson;
+var message, moduleNode, route, deleteconn, modifyconn;
 var modifyflag = false;
 var routings = new Map();
-var deleteconn;
-var modifyconn;
+
 vscode.postMessage({ text: "start" })
 window.addEventListener('message', event => {
     message = event.data;
