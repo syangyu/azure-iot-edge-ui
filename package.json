@@ -490,7 +490,7 @@
         "bootstrap": "^4.3.1",
         "dotenv": "^5.0.1",
         "download-git-repo": "^1.0.2",
-        "express": "^4.16.3",
+        "express": "^4.17.3",
         "fs-extra": "^4.0.2",
         "is-port-reachable": "^2.0.0",
         "jsonc-parser": "^1.0.1",
