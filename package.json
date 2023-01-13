@@ -478,7 +478,7 @@
         "typescript": "^2.0.3",
         "vscode": "^1.1.33",
         "webpack": "^4.19.1",
-        "webpack-cli": "^3.1.0",
+        "webpack-cli": "^3.3.12",
         "@types/express": "^4.11.1",
         "@types/body-parser": "^1.16.8"
     },
